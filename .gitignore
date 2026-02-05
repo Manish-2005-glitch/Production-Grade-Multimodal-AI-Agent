@@ -1,0 +1,7 @@
+.env
+venv/
+yolov8n.pt
+
+**/__pycache__/
+*.py[cod]
+*$py.class
