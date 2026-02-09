@@ -1,8 +1,10 @@
 from huggingface_hub import InferenceClient
 from config import HF_API_TOKEN
+import os
+print("HF_API_TOKEN loaded:", bool(os.getenv("HF_API_TOKEN")))
 
 llm = InferenceClient(
-    model="deepseek-ai/DeepSeek-V3.2",
+    model="HuggingFaceH4/zephyr-7b-beta",
     token=HF_API_TOKEN
 )
 
@@ -17,4 +19,5 @@ def generate(prompt):
             temperature=0.7
         )
     except Exception as e:
-        return "LLM service temporarily unavailable."
+        print("LLM ERROR:", e)
+        return "⚠️ LLM service temporarily unavailable."
