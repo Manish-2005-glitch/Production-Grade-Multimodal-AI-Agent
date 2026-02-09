@@ -7,4 +7,14 @@ llm = InferenceClient(
 )
 
 def generate(prompt):
-    return llm.text_generation(prompt, max_new_tokens=300)
+    """
+    Generate text using HuggingFace hosted LLM.
+    """
+    try:
+        return llm.text_generation(
+            prompt,
+            max_new_tokens=300,
+            temperature=0.7
+        )
+    except Exception as e:
+        return "LLM service temporarily unavailable."
