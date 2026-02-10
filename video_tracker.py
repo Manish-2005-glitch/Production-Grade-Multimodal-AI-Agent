@@ -1,6 +1,7 @@
 import cv2
 from ultralytics import YOLO
 from deep_sort_realtime.deepsort_tracker import DeepSort
+import pkg_resources
 
 yolo = YOLO("yolov8n.pt")
 
