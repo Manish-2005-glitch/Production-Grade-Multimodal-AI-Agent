@@ -4,4 +4,4 @@ import os
 load_dotenv()
 
 HF_API_TOKEN = os.getenv("HF_API_TOKEN")
-BACKEND_URL = os.getenv("BACKEND_API_URL")
+BACKEND_API_URL = os.getenv("BACKEND_API_URL")

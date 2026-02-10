@@ -5,10 +5,9 @@ import tempfile
 import base64
 import numpy as np
 import cv2
-from config import BACKEND_URL
 
-BACKEND_API_URL = (
-    #"BACKEND_URL",
+BACKEND_API_URL = os.getenv(
+    "BACKEND_API_URL",
     "http://localhost:8000/agent"
 )
 
