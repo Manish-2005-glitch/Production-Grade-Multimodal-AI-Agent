@@ -1,12 +1,17 @@
 from transformers import BlipProcessor, BlipForConditionalGeneration
 from PIL import Image
-import cv2
+import torch
 
 processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-base")
-model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-base")
+model = BlipForConditionalGeneration.from_pretrained(
+    "Salesforce/blip-image-captioning-base"
+)
 
-def caption(crop):
-    img = Image.fromarray(cv2.cvtColor(crop, cv2.COLOR_BGR2RGB))
-    inputs = processor(img, return_tensors = "pt")
-    out = model.generate(**inputs)
-    return processor.decode(out[0], skip_special_tokens = True)
+def caption_image(image_np):
+    image = Image.fromarray(image_np[:, :, ::-1])
+    inputs = processor(image, return_tensors="pt")
+
+    with torch.no_grad():
+        out = model.generate(**inputs, max_new_tokens=50)
+
+    return processor.decode(out[0], skip_special_tokens=True)
