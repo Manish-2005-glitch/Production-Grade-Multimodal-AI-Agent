@@ -4,6 +4,9 @@ from fastapi.responses import Response
 import numpy as np
 import cv2
 import base64
+from video_tracker import process_video
+import tempfile
+from fastapi.responses import FileResponse
 
 from prometheus_client import generate_latest
 from Metrics import REQUEST_COUNT, REQUEST_LATENCY
@@ -56,6 +59,22 @@ async def run_agent(
 
     return response
 
+@app.post("/video")
+async def run_video(file: UploadFile = File(...)):
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".mp4") as tmp:
+        tmp.write(await file.read())
+        input_path = tmp.name
+
+    output_path = input_path.replace(".mp4", "_tracked.mp4")
+
+    process_video(input_path, output_path)
+
+    return FileResponse(
+        output_path,
+        media_type="video/mp4",
+        filename="tracked_output.mp4"
+    )
+    
 @app.get("/metrics")
 def metrics():
     return Response(generate_latest(), media_type="text/plain")

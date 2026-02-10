@@ -5,9 +5,10 @@ import tempfile
 import base64
 import numpy as np
 import cv2
+from config import BACKEND_URL
 
 BACKEND_API_URL = (
-    #"BACKEND_API_URL",
+    #"BACKEND_URL",
     "http://localhost:8000/agent"
 )
 
@@ -32,6 +33,39 @@ question = st.sidebar.text_input(
     "Ask a question",
     value="Describe what is happening in this scene"
 )
+
+st.sidebar.markdown("---")
+st.sidebar.subheader("🎥 Video Tracking")
+
+video_file = st.sidebar.file_uploader(
+    "Upload a video",
+    type=["mp4"]
+)
+
+run_video = st.sidebar.button("Run Video Tracking")
+
+if run_video and video_file:
+    st.info("⏳ Processing video with tracking...")
+
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".mp4") as tmp:
+        tmp.write(video_file.read())
+        video_path = tmp.name
+
+    response = requests.post(
+        BACKEND_API_URL.replace("/agent", "/video"),
+        files={"file": open(video_path, "rb")},
+        timeout=600
+    )
+
+    if response.status_code == 200:
+        tracked_path = video_path.replace(".mp4", "_tracked.mp4")
+        with open(tracked_path, "wb") as f:
+            f.write(response.content)
+
+        st.subheader("📽️ Tracked Video Output")
+        st.video(tracked_path)
+    else:
+        st.error("Video processing failed.")
 
 run_button = st.sidebar.button("Run Agent")
 
