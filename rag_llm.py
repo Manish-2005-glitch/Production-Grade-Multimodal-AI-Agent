@@ -1,8 +1,8 @@
 from huggingface_hub import InferenceClient
 from config import HF_API_TOKEN
 
-# Primary (cloud)
-hf_llm = InferenceClient(
+
+llm = InferenceClient(
     model="google/flan-t5-base",
     token=HF_API_TOKEN,
     timeout=30
@@ -10,7 +10,7 @@ hf_llm = InferenceClient(
 
 def generate(prompt: str):
     try:
-        return hf_llm.text_generation(
+        return llm.text_generation(
             prompt,
             max_new_tokens=200,
             temperature=0.7
